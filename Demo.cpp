@@ -37,10 +37,10 @@ int main(int argc, const char * argv[]) {
 	for (int i: accumulate(range(5,9)))
 		cout << i << " ";      // 5 11 18 26
 
-    // cout << endl << "accumulate of vector<string>: " << endl;
-    // for (auto i: accumulate(vecString) )
-    //     cout << i << " ";  // Hello HelloBye HelloByeAdam
-    // cout << endl << endl;
+    cout << endl << "accumulate of vector<string>: " << endl;
+    for (auto i: accumulate(vecString) )
+        cout << i << " ";  // Hello HelloBye HelloByeAdam
+    cout << endl << endl;
 
     // cout << endl << "accumulate of range with binary operator: " << endl;
 	// for (int i: accumulate(range(5,9), [](int x, int y){return x*y;}))

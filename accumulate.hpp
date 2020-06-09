@@ -1,172 +1,78 @@
-// #pragma once
-
-// #include <iostream>
-// #include <string>
-// // #include <vector>
-
-// namespace itertools
-// {
-   
-//     template <typename T, typename ITR>
-//     class accumulate
-//     {
-//     private:
-//         T m_container;
-
-//     public:
-//         /* the iterator */
-//         class Iterator
-//         {
-//         public:
-//             Iterator(ITR from, ITR to);
-//             const int &operator*() const;
-//             Iterator &operator++();
-//             bool operator!=(const Iterator &other) const;
-
-//         private:
-//             ITR m_begin;
-//             ITR m_end;
-//             int m_current_sum = 0;
-//         };
-
-//     public:
-//         /* accumulate methods - decleration */
-//         accumulate(T container);
-//         Iterator begin() const;
-//         Iterator end() const;
-//     };
-
-//     /* accumulate methods - implementation */
-//     template <typename T, typename ITR>
-//     accumulate<T, ITR>::accumulate(T container) : m_container(container) {}
-
-//     template <typename T, typename ITR>
-//     accumulate<T,ITR>::Iterator::Iterator(ITR from , ITR to):
-//     m_begin(from),
-//     m_end(to){}
-
-//     template <typename T, typename ITR>
-//     typename accumulate<T,ITR>::Iterator &accumulate<T, ITR>::Iterator::operator++()
-//     {
-//         m_current_sum += *m_begin;
-//         ++m_begin;
-//         return *this;
-//     }
-
-//     template <typename T, typename ITR>
-//     const int &accumulate<T, ITR>::Iterator::operator*() const
-//     {
-//         return m_current_sum;
-//     }
-
-//     template <typename T, typename ITR>
-//     bool accumulate<T, ITR>::Iterator::operator!=(const accumulate::Iterator &other) const
-//     {
-//         return m_begin!=m_end;
-//     }
-
-//     template <typename T, typename ITR>
-//     typename accumulate<T, ITR>::Iterator accumulate<T, ITR>::begin() const
-//     {
-//         return accumulate<T,ITR>::Iterator{m_container.begin(), m_container.end()};
-//     }
-
-//     template <typename T, typename ITR>
-//     typename accumulate<T, ITR>::Iterator accumulate<T, ITR>::end() const
-//     {
-//         return accumulate<T,ITR>::Iterator{m_container.end(), m_container.end()};
-//     }
-
-
-
-// } // namespace itertools
-
-
-
-
-// *******************************************************************************************
-
-
-
 #pragma once
-
 #include <iostream>
 #include <string>
-// #include <vector>
+using namespace std;
 
 namespace itertools
 {
-   
-    template <typename T>
+
+    class plus
+    {
+    public:
+        template <typename T2>
+        T2 operator()(T2 a, T2 b) { return a + b; }
+    };
+
+    template <typename T, typename F = plus>
     class accumulate
     {
     private:
         T m_container;
+        F m_function;
 
     public:
         /* the iterator */
-        class Iterator
+        class iterator
         {
         public:
-            Iterator(typename T::Iterator from,typename T::Iterator to);
-            const int &operator*() const;
-            Iterator &operator++();
-            bool operator!=(const Iterator &other) const;
+            iterator(typename T::iterator from, typename T::iterator to, F func) : m_begin(from),
+                                                                                   m_end(to),
+                                                                                   m_ifunction(func),
+                                                                                   m_current_sum(*from) {}
+            iterator(const iterator &other) : m_begin(other.m_begin),
+                                              m_end(other.m_end),
+                                              m_ifunction(other.m_ifunction),
+                                              m_current_sum(other.m_current_sum) {}
+            decltype(*(m_container.begin())) operator*() const
+            {
+                // cout << "in operator* --- " << m_current_sum << endl;
+                return m_current_sum;
+            }
+            iterator &operator++()
+            {
+                // cout << "in operator++ ///// " << m_current_sum << endl;
+                ++m_begin;
+                if (m_begin != m_end)
+                {
+                    m_current_sum = m_ifunction(m_current_sum, *m_begin);
+                    // cout << "in operator++ ///// " << m_current_sum << endl;
+                }
+                return *this;
+            }
+            bool operator!=(const iterator &other) const
+            {
+                // cout << "in operator!= --- " <<  endl;
+                return m_begin != other.m_begin;
+            }
 
         private:
-            typename T::Iterator m_begin;
-            typename T::Iterator m_end;
-            int m_current_sum = 0;
+            typename T::iterator m_begin;
+            typename T::iterator m_end;
+            F m_ifunction;
+            decltype(*(m_container.begin())) m_current_sum;
         };
 
     public:
         /* accumulate methods - decleration */
-        accumulate(T container);
-        Iterator begin() const;
-        Iterator end() const;
+        accumulate(T container, F func = plus()) : m_container(container),
+                                                   m_function(func) {}
+        iterator begin()
+        {
+            return iterator{m_container.begin(), m_container.end(), m_function};
+        }
+        iterator end()
+        {
+            return iterator{m_container.end(), m_container.end(), m_function};
+        }
     };
-
-    /* accumulate methods - implementation */
-    template <typename T>
-    accumulate<T>::accumulate(T container) : m_container(container) {}
-
-    template <typename T>
-    accumulate<T>::Iterator::Iterator(typename T::Iterator from,typename T::Iterator to):
-    m_begin(from),
-    m_end(to){}
-
-    template <typename T>
-    typename accumulate<T>::Iterator &accumulate<T>::Iterator::operator++()
-    {
-        m_current_sum += *m_begin;
-        ++m_begin;
-        return *this;
-    }
-
-    template <typename T>
-    const int &accumulate<T>::Iterator::operator*() const
-    {
-        return m_current_sum;
-    }
-
-    template <typename T>
-    bool accumulate<T>::Iterator::operator!=(const accumulate<T>::Iterator &other) const
-    {
-        return m_begin!=other.m_begin;
-    }
-
-    template <typename T>
-    typename accumulate<T>::Iterator accumulate<T>::begin() const
-    {
-        return accumulate<T>::Iterator{m_container.begin(), m_container.end()};
-    }
-
-    template <typename T>
-    typename accumulate<T>::Iterator accumulate<T>::end() const
-    {
-        return accumulate<T>::Iterator{m_container.end(), m_container.end()};
-    }
-
-
-
 } // namespace itertools

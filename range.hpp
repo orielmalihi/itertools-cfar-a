@@ -14,13 +14,13 @@ namespace itertools
         int m_start, m_end;
     public:
         /* the iterator */
-        class Iterator
+        class iterator
         {
         public:
-            Iterator(int val);
-            const int &operator*() const;
-            Iterator &operator++();
-            bool operator!=(const Iterator &other) const;
+            iterator(int val);
+            int operator*() const;
+            iterator &operator++();
+            bool operator!=(const iterator &other) const;
 
         private:
             int m_current_number = -1;
@@ -29,8 +29,8 @@ namespace itertools
     public:
         /* rane methods - decleration */
         range(int from, int to);
-        Iterator begin() const ;
-        Iterator end() const;
+        iterator begin() const ;
+        iterator end() const;
     };
 
     
@@ -39,29 +39,29 @@ namespace itertools
         m_start(from),
         m_end(to){}
 
-    range::Iterator::Iterator(int val){
+    range::iterator::iterator(int val){
         m_current_number = val;
     }  
 
-    range::Iterator& range::Iterator::operator++(){
+    range::iterator& range::iterator::operator++(){
         m_current_number++;
         return *this;
     } 
 
-    const int & range::Iterator::operator*() const{
+    int range::iterator::operator*() const{
         return m_current_number;
     }
 
-    bool range::Iterator::operator!=(const range::Iterator& other) const {
+    bool range::iterator::operator!=(const range::iterator& other) const {
         return m_current_number!=other.m_current_number;
     }
 
-    range::Iterator range::begin() const{
-        return range::Iterator{m_start};
+    range::iterator range::begin() const{
+        return range::iterator{m_start};
     } 
 
-    range::Iterator range::end() const{
-        return range::Iterator{m_end};
+    range::iterator range::end() const{
+        return range::iterator{m_end};
     } 
  
 
