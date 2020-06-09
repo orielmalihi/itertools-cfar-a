@@ -32,10 +32,10 @@ int main(int argc, const char * argv[]) {
     vector<string> vecString = {"Hello", "Bye", "Adam"};
     vector<float> vecFloat = {-1, 0.3, 5.2, -8.3};
     
-    // cout << "####  accumulate:  ####";
-    // cout << endl << "accumulate of range: " << endl;
-	// for (int i: accumulate(range(5,9)))
-	// 	cout << i << " ";      // 5 11 18 26
+    cout << "\n####  accumulate:  ####";
+    cout << endl << "accumulate of range: " << endl;
+	for (int i: accumulate(range(5,9)))
+		cout << i << " ";      // 5 11 18 26
 
     // cout << endl << "accumulate of vector<string>: " << endl;
     // for (auto i: accumulate(vecString) )
